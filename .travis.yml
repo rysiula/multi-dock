@@ -6,7 +6,7 @@ before_install:
         - docker build -t rysiula/react-test -f ./client/Dockerfile.dev ./client/.
 
 script:
-        - docker run -it rysiula/react-test npm run test -- --coverage
+        - docker run -d rysiula/react-test npm run test -- --coverage
 
 after_success:
         - docker build -t rysiula/multi-client ./client 
