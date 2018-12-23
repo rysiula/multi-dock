@@ -1,0 +1,23 @@
+sudo: required
+services:
+        - docker
+
+before_install:
+        - docker build -t rysiula/react-test -f ./client/Dockerfile.dev ./client/.
+
+script:
+        - docker run rysiula/react-test npm test -- --coverage
+
+after_success:
+        - docker build -t rysiula/multi-client ./client 
+        - docker build -t rysiula/multi-nginx ./nginx
+        - docker build -t rysiula/multi-server ./server
+        - docker build -t rysiula/multi-worker ./worker
+
+        
+        - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+
+        - docker push rysiula/multi-client
+        - docker push rysiula/multi-nginx
+        - docker push rysiula/multi-server
+        - docker push rysiula/multi-worker
